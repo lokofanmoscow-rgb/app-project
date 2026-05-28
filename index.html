@@ -1,82 +1,622 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>ScoutAI</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0b0f19;
-      color: white;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    header {
-      padding: 20px;
-      font-size: 28px;
-      font-weight: bold;
-      background: #111827;
-    }
+<title>ScoutAI</title>
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 15px;
-      padding: 20px;
-    }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-    .card {
-      background: #141b2d;
-      padding: 15px;
-      border-radius: 10px;
-      border: 1px solid #222;
-    }
+body{
+  background:#0b0f19;
+  color:white;
+  font-family:Arial;
+}
 
-    .name {
-      font-size: 18px;
-      font-weight: bold;
-    }
+header{
+  background:#111827;
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #1f2937;
+}
 
-    button {
-      margin-top: 10px;
-      padding: 8px;
-      background: #2d6cdf;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+.logo{
+  font-size:28px;
+  font-weight:bold;
+}
+
+.nav{
+  display:flex;
+  gap:20px;
+  color:#aaa;
+}
+
+.container{
+  padding:20px;
+}
+
+.topbar{
+  display:flex;
+  gap:15px;
+  margin-bottom:25px;
+  flex-wrap:wrap;
+}
+
+.search{
+  flex:1;
+  min-width:200px;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#141b2d;
+  color:white;
+}
+
+.filter{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#141b2d;
+  color:white;
+}
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+  margin-bottom:30px;
+}
+
+.stat-card{
+  background:#141b2d;
+  padding:20px;
+  border-radius:12px;
+  border:1px solid #1f2937;
+}
+
+.stat-title{
+  color:#aaa;
+  margin-bottom:8px;
+}
+
+.stat-value{
+  font-size:28px;
+  font-weight:bold;
+}
+
+.players-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:15px;
+}
+
+.player-card{
+  background:#141b2d;
+  padding:18px;
+  border-radius:12px;
+  border:1px solid #1f2937;
+  transition:0.2s;
+  cursor:pointer;
+}
+
+.player-card:hover{
+  transform:translateY(-3px);
+}
+
+.player-name{
+  font-size:22px;
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+.player-club{
+  color:#aaa;
+  margin-bottom:10px;
+}
+
+.tags{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.tag{
+  background:#1d4ed8;
+  padding:5px 8px;
+  border-radius:6px;
+  font-size:12px;
+}
+
+.value{
+  margin-top:15px;
+  font-size:20px;
+  font-weight:bold;
+  color:#4ade80;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.modal-content{
+  background:#111827;
+  width:100%;
+  max-width:800px;
+  border-radius:15px;
+  padding:25px;
+}
+
+.close{
+  float:right;
+  cursor:pointer;
+  font-size:28px;
+}
+
+.profile-stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+  margin-top:20px;
+}
+
+.profile-stat{
+  background:#1f2937;
+  padding:15px;
+  border-radius:10px;
+}
+
+.ai-box{
+  margin-top:25px;
+  background:#0f172a;
+  padding:20px;
+  border-radius:12px;
+  border:1px solid #2563eb;
+}
+
+.ai-title{
+  margin-bottom:10px;
+  color:#60a5fa;
+}
+
+.leaderboard{
+  margin-top:40px;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+.table th,
+.table td{
+  padding:12px;
+  border-bottom:1px solid #1f2937;
+  text-align:left;
+}
+
+.table tr:hover{
+  background:#141b2d;
+}
+</style>
 </head>
 
 <body>
-  <header>⚽ ScoutAI - Transfer Market</header>
 
-  <div class="grid" id="players"></div>
+<header>
+  <div class="logo">⚽ ScoutAI</div>
 
-  <script>
-    const players = [
-      { name: "Jude Bellingham", club: "Real Madrid", age: 21, value: 180 },
-      { name: "Jamal Musiala", club: "Bayern", age: 21, value: 120 },
-      { name: "Pedri", club: "Barcelona", age: 22, value: 100 }
-    ];
+  <div class="nav">
+    <div>Players</div>
+    <div>Transfers</div>
+    <div>Wonderkids</div>
+    <div>Analytics</div>
+  </div>
+</header>
 
-    const container = document.getElementById("players");
+<div class="container">
 
-    players.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <div class="name">${p.name}</div>
-        <div>Club: ${p.club}</div>
-        <div>Age: ${p.age}</div>
-        <div>Value: €${p.value}M</div>
-        <button onclick="alert('AI Scout Score coming soon')">
-          AI Scout Score
-        </button>
+<div class="topbar">
+  <input
+    class="search"
+    id="search"
+    placeholder="Search player, club, country..."
+  />
+
+  <select class="filter" id="positionFilter">
+    <option value="">All Positions</option>
+    <option value="ST">ST</option>
+    <option value="CM">CM</option>
+    <option value="CAM">CAM</option>
+    <option value="RW">RW</option>
+    <option value="LW">LW</option>
+  </select>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-title">Players</div>
+    <div class="stat-value">10</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-title">Wonderkids</div>
+    <div class="stat-value">4</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-title">Highest Value</div>
+    <div class="stat-value">€200M</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-title">AI Accuracy</div>
+    <div class="stat-value">92%</div>
+  </div>
+</div>
+
+<div class="players-grid" id="playersGrid"></div>
+
+<div class="leaderboard">
+  <h2>🏆 Top Scout Scores</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Club</th>
+        <th>Scout Score</th>
+      </tr>
+    </thead>
+
+    <tbody id="leaderboardBody"></tbody>
+  </table>
+</div>
+
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">×</span>
+    <div id="profile"></div>
+  </div>
+</div>
+
+<script>
+const players = [
+{
+id:1,
+name:"Jude Bellingham",
+club:"Real Madrid",
+country:"England",
+position:"CM",
+age:21,
+value:180,
+goals:23,
+assists:12,
+xg:18.4,
+minutes:3200,
+scout:92,
+potential:"World Class",
+style:"Box-to-box playmaker"
+},
+{
+id:2,
+name:"Jamal Musiala",
+club:"Bayern Munich",
+country:"Germany",
+position:"CAM",
+age:21,
+value:120,
+goals:15,
+assists:10,
+xg:14.1,
+minutes:2800,
+scout:88,
+potential:"Elite Dribbler",
+style:"Creative attacker"
+},
+{
+id:3,
+name:"Pedri",
+club:"Barcelona",
+country:"Spain",
+position:"CM",
+age:22,
+value:100,
+goals:6,
+assists:14,
+xg:5.2,
+minutes:2500,
+scout:85,
+potential:"Tactical Genius",
+style:"Deep playmaker"
+},
+{
+id:4,
+name:"Lamine Yamal",
+club:"Barcelona",
+country:"Spain",
+position:"RW",
+age:17,
+value:150,
+goals:18,
+assists:16,
+xg:12.8,
+minutes:2400,
+scout:95,
+potential:"Generational Talent",
+style:"Explosive winger"
+},
+{
+id:5,
+name:"Erling Haaland",
+club:"Manchester City",
+country:"Norway",
+position:"ST",
+age:25,
+value:200,
+goals:42,
+assists:7,
+xg:39.2,
+minutes:3400,
+scout:94,
+potential:"Elite Finisher",
+style:"Target striker"
+},
+{
+id:6,
+name:"Bukayo Saka",
+club:"Arsenal",
+country:"England",
+position:"RW",
+age:24,
+value:140,
+goals:19,
+assists:13,
+xg:15.1,
+minutes:3100,
+scout:90,
+potential:"World Class Winger",
+style:"Inside forward"
+},
+{
+id:7,
+name:"Florian Wirtz",
+club:"Bayer Leverkusen",
+country:"Germany",
+position:"CAM",
+age:22,
+value:130,
+goals:14,
+assists:18,
+xg:10.7,
+minutes:2900,
+scout:91,
+potential:"Creative Genius",
+style:"Attacking playmaker"
+},
+{
+id:8,
+name:"Cole Palmer",
+club:"Chelsea",
+country:"England",
+position:"CAM",
+age:23,
+value:110,
+goals:25,
+assists:11,
+xg:17.5,
+minutes:3000,
+scout:89,
+potential:"Elite Creator",
+style:"Technical playmaker"
+},
+{
+id:9,
+name:"Vinicius Junior",
+club:"Real Madrid",
+country:"Brazil",
+position:"LW",
+age:25,
+value:170,
+goals:24,
+assists:15,
+xg:20.4,
+minutes:3200,
+scout:93,
+potential:"Ballon d'Or Level",
+style:"Explosive dribbler"
+},
+{
+id:10,
+name:"Endrick",
+club:"Real Madrid",
+country:"Brazil",
+position:"ST",
+age:18,
+value:80,
+goals:11,
+assists:4,
+xg:9.5,
+minutes:1600,
+scout:90,
+potential:"Future Superstar",
+style:"Dynamic striker"
+}
+];
+
+const grid = document.getElementById("playersGrid");
+const leaderboard = document.getElementById("leaderboardBody");
+const search = document.getElementById("search");
+const positionFilter = document.getElementById("positionFilter");
+const modal = document.getElementById("modal");
+const profile = document.getElementById("profile");
+
+function render(list){
+  grid.innerHTML = "";
+
+  list.forEach(p => {
+    const div = document.createElement("div");
+
+    div.className = "player-card";
+
+    div.innerHTML = `
+      <div class="player-name">${p.name}</div>
+      <div class="player-club">${p.club}</div>
+
+      <div>${p.position} • ${p.age} years • ${p.country}</div>
+
+      <div class="tags">
+        <div class="tag">Scout ${p.scout}</div>
+        <div class="tag">${p.potential}</div>
+      </div>
+
+      <div class="value">€${p.value}M</div>
+    `;
+
+    div.onclick = () => openPlayer(p);
+
+    grid.appendChild(div);
+  });
+}
+
+function renderLeaderboard(){
+  leaderboard.innerHTML = "";
+
+  [...players]
+    .sort((a,b) => b.scout - a.scout)
+    .forEach(p => {
+      leaderboard.innerHTML += `
+        <tr>
+          <td>${p.name}</td>
+          <td>${p.club}</td>
+          <td>${p.scout}</td>
+        </tr>
       `;
-      container.appendChild(div);
     });
-  </script>
+}
+
+function openPlayer(p){
+  modal.style.display = "flex";
+
+  profile.innerHTML = `
+    <h1>${p.name}</h1>
+
+    <p style="margin-top:5px;color:#aaa">
+      ${p.club} • ${p.position}
+    </p>
+
+    <div class="profile-stats">
+
+      <div class="profile-stat">
+        ⚽ Goals
+        <h2>${p.goals}</h2>
+      </div>
+
+      <div class="profile-stat">
+        🎯 Assists
+        <h2>${p.assists}</h2>
+      </div>
+
+      <div class="profile-stat">
+        📈 xG
+        <h2>${p.xg}</h2>
+      </div>
+
+      <div class="profile-stat">
+        ⏱ Minutes
+        <h2>${p.minutes}</h2>
+      </div>
+
+      <div class="profile-stat">
+        💰 Value
+        <h2>€${p.value}M</h2>
+      </div>
+
+      <div class="profile-stat">
+        🧠 Scout
+        <h2>${p.scout}</h2>
+      </div>
+
+    </div>
+
+    <div class="ai-box">
+
+      <div class="ai-title">
+        AI Scout Analysis
+      </div>
+
+      <p>
+        ${p.name} profiles as a
+        high-upside ${p.style.toLowerCase()}
+        with elite long-term development potential.
+      </p>
+
+      <br/>
+
+      <p>
+        Potential: <b>${p.potential}</b>
+      </p>
+
+      <br/>
+
+      <p>
+        Recommended for Champions League level clubs.
+      </p>
+
+    </div>
+  `;
+}
+
+function closeModal(){
+  modal.style.display = "none";
+}
+
+function applyFilters(){
+  const searchValue = search.value.toLowerCase();
+  const positionValue = positionFilter.value;
+
+  const filtered = players.filter(p => {
+
+    const matchesSearch =
+      p.name.toLowerCase().includes(searchValue) ||
+      p.club.toLowerCase().includes(searchValue) ||
+      p.country.toLowerCase().includes(searchValue);
+
+    const matchesPosition =
+      !positionValue ||
+      p.position === positionValue;
+
+    return matchesSearch && matchesPosition;
+  });
+
+  render(filtered);
+}
+
+search.oninput = applyFilters;
+positionFilter.onchange = applyFilters;
+
+render(players);
+renderLeaderboard();
+</script>
+
 </body>
 </html>
+```
